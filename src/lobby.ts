@@ -13,12 +13,16 @@ export class Lobby
   public addUser(user: User)
   {
     this.broadcast((playerId, player) => player.sendEnterUser(user));
+    this.broadcast((playerId, player) => user.sendEnterUser(player));
     user.sendEnterUser(user);
+    user.chatRoom("Joined Game!");
     this.users.set(user.getUserId(), user);
   }
 
   public removeUser(user: User)
   {
+    this.broadcast((playerId, player) => player.sendRemoveUser(user));
+    user.chatRoom("Left Game!");
     this.users.delete(user.getUserId())
   }
 
