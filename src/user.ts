@@ -1,5 +1,5 @@
 import { Lobby } from "./lobby";
-import { sendChat, sendEnterUser, sendRemoveUser, sendUserData, UserData } from "./packet";
+import { sendChat, sendPrivateChat, sendEnterUser, sendRemoveUser, sendUserData, UserData } from "./packet";
 import { Remote } from "./remote";
 
 export class IdGenerator
@@ -53,6 +53,11 @@ export class User
   {
     return this.ud.userId;
   }
+  
+  public getDisplayNameWithId()
+  {
+    return `${this.ud.displayName}[${this.ud.userId}]`;
+  }
 
   public chatRoom(message: string)
   {
@@ -61,7 +66,7 @@ export class User
 
   public sendUserData()
   {
-    sendUserData(this.remote, this.getUserId(), this.getDisplayName())
+    sendUserData(this.remote, this.getUserId(), this.getDisplayNameWithId())
   }
 
   public sendChat(senderId: number, sender: string, message: string)
@@ -69,9 +74,14 @@ export class User
     sendChat(this.remote, senderId, sender, message);
   }
 
+  public sendPrivateChat(receiverId: number, message: string)
+  {
+    sendPrivateChat(this.remote, receiverId, message);
+  }
+
   public sendEnterUser(user: User)
   {
-    sendEnterUser(this.remote, user.getUserId(), user.getDisplayName());
+    sendEnterUser(this.remote, user.getUserId(), user.getDisplayNameWithId());
   }
 
   public sendRemoveUser(user: User)
@@ -92,6 +102,7 @@ export class User
   public doPrivateChat(receiverId: number, message: string)
   {
     // implement private chat
+    this.lobby.privateChat(this, receiverId, message);
   }
 
   public close()

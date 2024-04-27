@@ -38,6 +38,14 @@ export class Lobby
     });
   }
 
+  public privateChat(sender: User, receiverId: number, message: string)
+  {
+    if(sender.getUserId() !== receiverId) {
+      sender.sendPrivateChat(receiverId, message)
+      this.getUser(receiverId)?.sendPrivateChat(sender.getUserId(), message)
+    }
+  }
+
   private broadcast(handler: (playerId: number, player: User) => void)
   {
     for (const [id, player] of this.users)

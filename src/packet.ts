@@ -51,7 +51,7 @@ async function dispatchChat(remote: IPacket, data: any)
 }
 async function dispatchPrivateChat(remote: IPacket, data: any)
 {
-  if (!remote.verify()) { log_err("dispatchDisconnect verify failed"); return; }
+  if (!remote.verify()) { log_err("dispatchPrivateChat verify failed"); return; }
   await remote.recvPrivateChat(data.receiverId, data.message);
 }
 
@@ -65,6 +65,12 @@ export function sendChat(remote: IPacket|undefined, senderId: number, sender: st
 {
   if (remote === undefined) return;
   remote.send(JSON.stringify({ name: "Chat", data: { senderId, sender, message } }));
+}
+
+export function sendPrivateChat(remote: IPacket|undefined, receiverId: number, message: string)
+{
+  if (remote === undefined) return;
+  remote.send(JSON.stringify({ name: "PrivateChat", data: { receiverId, message } }));
 }
 
 export function sendEnterUser(remote: IPacket|undefined, userId: number, displayName: string)
